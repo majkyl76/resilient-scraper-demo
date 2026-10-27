@@ -20,7 +20,9 @@ OK: 3 product(s), 1 page(s) ok, 0 failed, 1 dup(s) removed
 
 It writes `output/products.csv` (3 rows, one duplicate dropped) and
 `output/run_report.json`, and exits 0. That is the whole thing working against a
-bundled sample page. The rest of this README explains what it proves and how to
+bundled sample page.
+
+![Good run](docs/run-ok.png) The rest of this README explains what it proves and how to
 see it fail on purpose.
 
 ## What it is
@@ -83,6 +85,8 @@ FAILED: 3 product(s), 1 page(s) ok, 2 failed, 1 dup(s) removed
   error: no product containers found in tests/fixtures/empty.html: ...
 ```
 
+![Failed run](docs/run-fail.png)
+
 The good page still produces its 3 rows, but the run as a whole is marked
 failed so the broken pages cannot pass unnoticed.
 
@@ -121,3 +125,5 @@ This is a demonstration. It ships with local HTML fixtures and dummy data only.
 It has not been pointed at any live website, and the example URLs use the
 reserved `example.invalid` domain. If you did adapt it for a real site, you
 would need to check that site's terms of use and `robots.txt` first.
+
+The screenshots in `docs/` are images generated from real runs of the commands shown above.
