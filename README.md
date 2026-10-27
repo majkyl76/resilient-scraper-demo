@@ -49,7 +49,7 @@ scraper/run.py     command line: fetch or read fixtures, dedupe, write CSV and r
 tests/             unittest suite and the HTML fixtures
 ```
 
-Fetching: A request gets up to three attempts. Between attempts it waits `0.5 * 2^(n-1)` seconds, capped at 10, plus a random extra of up to half a second so several copies running together do not all retry at the same moment. It also waits one second before the first request and sends its own User-Agent. The HTTP function, the sleep function and the random source are all passed in, which is how the tests check the retry timing without a network or any real waiting.
+Fetching: a request gets up to three attempts. Between attempts it waits `0.5 * 2^(n-1)` seconds, capped at 10, plus a random extra of up to half a second so several copies running together do not all retry at the same moment. It also waits one second before the first request and sends its own User-Agent. The HTTP function, the sleep function and the random source are all passed in, which is how the tests check the retry timing without a network or any real waiting.
 
 Parsing: It uses the standard library's `html.parser` and reads name, price and URL from each product. If the product containers are missing, or one is missing a field, it raises a `ParseError` that says which. A page with no usable products is treated as a failure.
 
