@@ -1,16 +1,42 @@
 # resilient-scraper-demo
 
-A small portfolio sample of a web scraper that is built to fail loudly rather
-than break quietly. The point of the project is the reliability engineering
-around the scrape, not the scraping of any particular site.
+This is a small demo scraper in Python with no third party dependencies. It
+shows how a scraper can notice when a page changes or a request is blocked and
+stop with a clear error, rather than quietly writing an empty or wrong file.
+
+## Quick start
+
+No install and no network needed. Python 3 only. Run this:
+
+```
+python3 -m scraper.run --fixtures tests/fixtures_good
+```
+
+You will see:
+
+```
+OK: 3 product(s), 1 page(s) ok, 0 failed, 1 dup(s) removed
+```
+
+It writes `output/products.csv` (3 rows, one duplicate dropped) and
+`output/run_report.json`, and exits 0. That is the whole thing working against a
+bundled sample page.
+
+![Good run](docs/run-ok.png)
+
+The rest of this README explains what it proves and how to see it fail on
+purpose.
 
 ## What it is
 
 A scraper has three jobs here:
 
-1. **Fetch** pages over HTTP with timeouts, retries, exponential backoff with
-   jitter, a polite delay between requests and a custom User-Agent. The HTTP
-   layer is injectable, so the logic can be tested without the network.
+1. **Fetch** pages over HTTP with timeouts and retries. A failed request is
+   retried a few times with a growing wait between tries (exponential backoff),
+   plus a small random delay so many copies running at once do not all retry at
+   the same moment (jitter). It waits before each request to be polite and sends
+   a custom User-Agent. The HTTP layer is passed in as an argument, so the logic
+   can be tested without the network.
 2. **Parse** a product listing into records of name, price and URL. If the
    expected structure is missing it raises a clear error, so a layout change on
    the source site is caught rather than ignored. Zero results is treated as a
@@ -34,28 +60,37 @@ tests/             unittest suite and HTML fixtures
 Python 3 only. The parser uses the standard library `html.parser`, so there are
 no third party dependencies to install. `beautifulsoup4` is not required.
 
-## How to run the tests
+## Run the tests
 
 ```
 python3 -m unittest
 ```
 
-All HTTP is faked in the tests, so nothing touches the network.
+This runs 17 tests. All HTTP is faked in the tests, so nothing touches the
+network.
 
-## How to run on fixtures
+## See it fail on purpose
 
-Run against the bundled good page (succeeds, writes a CSV, exits 0):
-
-```
-python3 -m scraper.run --fixtures tests/fixtures_good
-```
-
-Run against all the fixtures, including a changed layout and an empty page
-(demonstrates failure detection, exits 1):
+The quick start above runs against a good page and succeeds. To see the failure
+handling, run against the full fixture set, which also includes a page with a
+changed layout and an empty page:
 
 ```
 python3 -m scraper.run --fixtures tests/fixtures
 ```
+
+You will see a FAILED summary, two reported errors and a non-zero exit code:
+
+```
+FAILED: 3 product(s), 1 page(s) ok, 2 failed, 1 dup(s) removed
+  error: no product containers found in tests/fixtures/changed_layout.html: the page layout may have changed or the request was blocked
+  error: no product containers found in tests/fixtures/empty.html: the page layout may have changed or the request was blocked
+```
+
+![Failed run](docs/run-fail.png)
+
+The good page still produces its 3 rows, but the run as a whole is marked
+failed so the broken pages cannot pass unnoticed.
 
 Output is written under `output/`:
 
@@ -64,9 +99,9 @@ Output is written under `output/`:
 
 You can also point it at live URLs instead of fixtures, for example
 `python3 -m scraper.run https://example.invalid/listing`, but see the note
-below.
+below. The demo has only ever been run against the bundled fixtures.
 
-## Reliability notes
+## How failures are handled
 
 - **Retries with backoff and jitter.** Transient network errors are retried a
   few times. The wait grows exponentially and is capped, with a little random
@@ -92,3 +127,5 @@ This is a demonstration. It ships with local HTML fixtures and dummy data only.
 It has not been pointed at any live website, and the example URLs use the
 reserved `example.invalid` domain. If you did adapt it for a real site, you
 would need to check that site's terms of use and `robots.txt` first.
+
+The screenshots in `docs/` are images generated from real runs of the commands shown above.
