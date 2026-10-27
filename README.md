@@ -101,7 +101,7 @@ You can also point it at live URLs instead of fixtures, for example
 `python3 -m scraper.run https://example.invalid/listing`, but see the note
 below. The demo has only ever been run against the bundled fixtures.
 
-## Reliability notes
+## How failures are handled
 
 - **Retries with backoff and jitter.** Transient network errors are retried a
   few times. The wait grows exponentially and is capped, with a little random
