@@ -10,7 +10,7 @@ import time
 import urllib.error
 import urllib.request
 
-DEFAULT_USER_AGENT = "resilient-scraper-demo/1.0 (+https://example.invalid/bot)"
+DEFAULT_USER_AGENT = "resilient-scraper-demo/1.0 (+https://example.invalid/contact)"
 
 
 class FetchError(Exception):

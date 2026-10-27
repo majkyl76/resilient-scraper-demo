@@ -145,9 +145,9 @@ class FetchRetryTests(unittest.TestCase):
             retries=1,
             timeout=7.0,
             polite_delay=0,
-            user_agent="my-agent/9",
+            user_agent="my-scraper/9",
         )
-        self.assertEqual(seen["user_agent"], "my-agent/9")
+        self.assertEqual(seen["user_agent"], "my-scraper/9")
         self.assertEqual(seen["timeout"], 7.0)
 
 
