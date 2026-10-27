@@ -1,8 +1,8 @@
 # resilient-scraper-demo
 
-A small portfolio sample of a web scraper. The point is not the scraping itself,
-it is what happens when a page changes or a request is blocked: this scraper
-stops and reports the problem instead of quietly writing an empty or wrong file.
+This is a small demo scraper in Python with no third party dependencies. It
+shows how a scraper can notice when a page changes or a request is blocked and
+stop with a clear error, rather than quietly writing an empty or wrong file.
 
 ## Quick start
 
@@ -22,8 +22,10 @@ It writes `output/products.csv` (3 rows, one duplicate dropped) and
 `output/run_report.json`, and exits 0. That is the whole thing working against a
 bundled sample page.
 
-![Good run](docs/run-ok.png) The rest of this README explains what it proves and how to
-see it fail on purpose.
+![Good run](docs/run-ok.png)
+
+The rest of this README explains what it proves and how to see it fail on
+purpose.
 
 ## What it is
 
@@ -81,8 +83,8 @@ You will see a FAILED summary, two reported errors and a non-zero exit code:
 
 ```
 FAILED: 3 product(s), 1 page(s) ok, 2 failed, 1 dup(s) removed
-  error: no product containers found in tests/fixtures/changed_layout.html: ...
-  error: no product containers found in tests/fixtures/empty.html: ...
+  error: no product containers found in tests/fixtures/changed_layout.html: the page layout may have changed or the request was blocked
+  error: no product containers found in tests/fixtures/empty.html: the page layout may have changed or the request was blocked
 ```
 
 ![Failed run](docs/run-fail.png)
